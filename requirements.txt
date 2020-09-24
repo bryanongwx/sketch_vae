@@ -1,0 +1,9 @@
+streamlit
+tensorflow==2.0
+keras
+tensorflow.keras
+tensorflow.keras.backend
+tensorflow.keras.models
+matplotlib
+Image
+numpy
