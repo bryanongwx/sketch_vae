@@ -121,13 +121,13 @@ if canvas_result.image_data is not None:
     # st.write('shape is', img_array.shape)
     encoder,decoder = load_model()
     result,_,_ = encoder.predict(img_array)
-    # st.write('Encoder prediction is', result)
+    st.write('Encoder prediction is', result)
 
     reconstruction = decoder.predict(result)
 
     reconstruction = reconstruction.reshape(reconstruction.shape[1], reconstruction.shape[2], reconstruction.shape[3])
-    # st.write('Decoder results is')
-    # st.image(reconstruction, width = 300)
+    st.write('Decoder results is')
+    st.image(reconstruction, width = 300)
 
 
 
@@ -137,7 +137,7 @@ if canvas_result.image_data is not None:
 
 
 img_file_buffer = st.file_uploader('Upload a PNG image', type='png')
-# st.set_option('deprecation.showfileUploaderEncoding', False)
+st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if img_file_buffer is not None:
     image = Image.open(img_file_buffer)
