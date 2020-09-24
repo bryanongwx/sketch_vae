@@ -1,0 +1,7 @@
+streamlit
+tensorflow==2.0
+streamlit-drawable-canvas
+dataclasses
+matplotlib
+Image
+numpy
