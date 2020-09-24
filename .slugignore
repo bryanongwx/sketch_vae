@@ -1,0 +1,5 @@
+# Heres a comment
+*.heroku
+*.pdf
+/staticfiles
+/spec
