@@ -1,6 +1,0 @@
-streamlit
-tensorflow==2.0
-streamlit-drawable-canvas
-matplotlib
-Image
-numpy
