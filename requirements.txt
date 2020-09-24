@@ -1,0 +1,8 @@
+streamlit
+pandas
+tensorflow
+keras
+matplotlib
+PIL
+numpy
+skimage
