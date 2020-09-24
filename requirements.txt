@@ -1,0 +1,6 @@
+streamlit
+tensorflow==1.4.1
+keras==2.0.8
+matplotlib
+Image
+numpy
