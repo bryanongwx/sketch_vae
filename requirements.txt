@@ -1,7 +1,0 @@
-streamlit
-pandas
-tensorflow
-keras
-matplotlib
-Image
-numpy
