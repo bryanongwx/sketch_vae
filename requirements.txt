@@ -1,6 +1,0 @@
-streamlit
-tensorflow==1.8
-keras
-matplotlib
-Image
-numpy
