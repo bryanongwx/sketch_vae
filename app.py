@@ -127,4 +127,4 @@ def favicon():
 
 encoder,decoder = load_model()
 if __name__ == '__main__':
-    app.run(use_reloader=True, debug=True)
+    app.run(use_reloader=False, debug=True)
