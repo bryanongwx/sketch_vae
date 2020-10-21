@@ -24,7 +24,7 @@ var svg = d3.select("#plot")
         "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.csv("csv_data.txt", function(data) {
+d3.csv("static/js/csv_data.txt", function(data) {
 
   // Color scale: give me a specie name, I return a color
   var color = d3.scaleOrdinal()
@@ -32,7 +32,7 @@ d3.csv("csv_data.txt", function(data) {
     .range([color1]) //,, color2, color3, color4, color5, color6, color7, color8, color9])
 
   // Here I set the list of dimension manually to control the order of axis:
-  dimensions = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  dimensions = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 
   // For each dimension, I build a linear scale. I store all in a y object
   var y = {}
@@ -57,8 +57,8 @@ d3.csv("csv_data.txt", function(data) {
     // first every group turns grey
     d3.selectAll(".line")
       .transition().duration(200)
-      .style("stroke", "lightgrey")
-      .style("opacity", "0.2")
+      .style("stroke", "black")
+      .style("opacity", "0.4")
     // Second the hovered specie takes its color
     d3.selectAll("." + selected_specie)
       .transition().duration(200)
@@ -81,12 +81,12 @@ d3.csv("csv_data.txt", function(data) {
 
   // Draw the lines
   svg
-    .selectAll("myPath")
+  .selectAll("myPath")
     .data(data)
     .enter()
     .append("path")
       .attr("class", function (d) { return "line " + d.Species } ) // 2 class for each line: 'line' and the group name
-      .attr("d",  path)
+      .attr("d", path)
       .style("fill", "none" )
       .style("stroke", function(d){ return( color(d.Species))} )
       .style("opacity", 0.5)

@@ -13,7 +13,7 @@ var canvas, ctx, flag = false,
     canvas2,
     ctx2;
 
-const canvas_size = 336 
+const canvas_size = 360 
 
 const intervalTime = 10; //interval in milliseconds for recording points of stroke
 const timerText = document.getElementById("title");
@@ -251,178 +251,93 @@ function eraseAll() {
         sketch3.src = "https://i.ya-webdesign.com/images/blank-png-1.png";
         sketch4.src = "https://i.ya-webdesign.com/images/blank-png-1.png";
         addCount = 0
-    }
+    }    
 }
 function fillCanvas() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, w, h);    
 }
 
-// model stuff
-// var encoder;
-// var decoder;
-// var model;
 
-// tf.loadLayersModel("0831encoder2/encoder.json").then(function(enc) {
-//     encoder = enc;
-//     console.log("= = = ENCODER LOADED = = =");
-//     console.log(encoder);
-//    });
-// tf.loadLayersModel("0831decoder2/decoder.json").then(function(dec) {
-//     decoder = dec;
-//     console.log("= = = DECODER LOADED = = = ");
-//     console.log(decoder);
-//    });
+/**
+ * COMMUNICATION WITH 
+ * PYTHON FILE  
+*/
 
-
-// tf.loadLayersModel("CNN/model.json").then(function(model) {
-//     window.model = model;
-//     // window.alert('All models loaded!');
-//     // $("loading-div").addClass("invisible");
-//     var loading_div = document.getElementById("loading-div");
-//     loading_div.style.display = "none";
-//     $("body").removeClass("loading-cursor");
-//     console.log("= = = CNN LOADED = = = = =");
-//    });
-
-    
-// predicts performance (integer)    
-function CNNpredict() {
-    $("body").addClass("loading-cursor");
-    resetResults();
-    var pred = new Image();
-    pred.onload = function() {
-        ctx.drawImage(pred, 0, 0, canvas_size, canvas_size);
-        data = ctx.getImageData(0, 0, canvas_size, canvas_size).data;
-        document.getElementById("predict-img").src = canvas.toDataURL();
-        var input = [];
-        for(var i = 0; i < data.length; i += 4) {
-            input.push(data[i + 0] / 255);
-            input.push(data[i + 1] / 255);
-            input.push(data[i + 2] / 255);
-        }
-        CNNpredict2(input);
-    };
-    pred.src = canvas.toDataURL('image/png');
-}   
-
-
-function CNNpredict2(input) {
-    // input = [1,2,3,4,5,6,7,8,9]
-    console.log("CNN Predict 2 input:")
-    console.log(input)
-    console.log("\nCalling pythonCNN")
-    prediction = pythonCNN(input);
-
-    // // console.log("ID: "+ count);
-
-    // // console.log("predict inp: "+input);
-    // reshaped_input = tf.reshape(input, [1,224,224,3]);
-    // // console.log("reshape inp: "+reshaped_input);
-      
-    // var outPred = model.predict(reshaped_input);
-
-    // var tensorData = outPred.dataSync();
-    // // console.log("tensor data "+tensorData)
-    // var predictDisplay = tensorData[0].toFixed(2);
-
-
-    var predictDisplay = prediction;
-
-    var output = document.getElementById("prediction");
-    output.innerHTML = predictDisplay;
-    
-    erase();
-    $("body").removeClass("loading-cursor");
-}
-
-function pythonCNN(input){
-    console.log("python CNN func called with "+input);
-
-    // let first = 10;
-    // let second = 20;
-    // fetch("/add")
-    //   .then((response) => {
-    //     return response.json();
-    //   })
-    //   .then((myJson) => {
-    //     console.log("When I add "+first+" and "+second+" I get: "+myJson.result);
-    //     callbackFunc(myJson.response);
-    // });
-    input = JSON.stringify(input);
-    
-    console.log("converted?  "+input);
-    $.ajax({
-        type : 'POST',
-        url : "/predict",
-        dataType : "json",
-        contentType: 'application/json;charset=UTF-8',
-        data : JSON.stringify({"inp":input}),
-        success:callbackFuncCNN
-    });
-    // $.ajax({
-    //     type: "POST",
-    //     url:"/test",
-    //     data:{JSinput: input},
-    //     success:callbackFunc
-    // });
-}
-
-function callbackFuncCNN(response) {
-    console.log("Callback RESPONSE is:")
-    console.log(response)
-    $('#test-text').html('<li>'+JSON.stringify(response)+'</li>');
-}
-
-
-// makes prediction from added Sketch
+// VAE PREDICTION
 function VAEpredict() { 
     console.log("vae predict called")
 
-    resetResults();
     var pred = new Image();
     pred.onload = function() {
         ctx.drawImage(pred, 0, 0, canvas_size, canvas_size);
         data = ctx.getImageData(0, 0, canvas_size, canvas_size).data;
-        document.getElementById("predict-img").src = canvas.toDataURL();
+        // document.getElementById("predict-img").src = canvas.toDataURL();
         var input = [];
         for(var i = 0; i < data.length; i += 4) {
-            input.push(data[i + 0] / 255);
-            input.push(data[i + 1] / 255);
-            input.push(data[i + 2] / 255);
+            input.push(data[i + 0]);
+            input.push(data[i + 1]);
+            input.push(data[i + 2]);
         }
-        // add input to this when encoder works
-        pythonVAE(input);
+        VAEencoderRequest(input);
+        CNNpredict(input);
     };
     pred.src = canvas.toDataURL('image/png');
 }   
+// Makes request to python file
+function VAEencoderRequest(input){
+    console.log("python VAE func called w/");
+    // console.log(input)
+    // console.log("input shape1: "+input.length)
 
-function pythonVAE(input){
-    console.log("python VAE func called");
     input = JSON.stringify(input);
     
+    // console.log("input stringified");
+    // console.log(input)
     $.ajax({
         type : 'POST',
-        url : "/VAEpredict",
+        url : "/VAEencoder",
         dataType : "json",
         contentType: 'application/json;charset=UTF-8',
-        data : JSON.stringify({"inp":input}),
+        data : JSON.stringify({"input":input}),
         success:callbackFuncVAE
     });
 }
+function VAEdecoderRequest(input){
+    console.log("python VAE decoder func called w/");
+    console.log(input)
+    // console.log("input shape1: "+input.length)
 
+    vector = JSON.stringify(input);
+    
+    console.log("input stringified");
+    console.log(vector)
+    $.ajax({
+        type : 'POST',
+        url : "/VAEdecoderHelper",
+        dataType : "json",
+        contentType: 'application/json;charset=UTF-8',
+        data : JSON.stringify({"input":vector}),
+        success:callbackFuncVAE
+    });
+}
 function callbackFuncVAE(response) {
     console.log("callback func called")
 
+    let vec = response["vector"];
+    console.log("vector response: "+vec);
+    updateSliders(vec);
     TensorToImage(response["result"]);
-    erase();
+
     // $('#test-text').html('<li>'+"VAE PREDICTION MADE."+Math.random()+'</li>');
 }
 function TensorToImage(rgbdata_reshaped) {
     console.log("tensor to image called")
     var hgt = 72;
     var wdt = 72;
-    var scale = 4;
+    var scale = 5;
+    // var scale = 1;
+
     var r,g,b;
 
     for(var i=0; i< hgt; i++){ 
@@ -437,6 +352,84 @@ function TensorToImage(rgbdata_reshaped) {
     }  
     let png = canvas2.toDataURL();
     updateSaved(png);
+}
+
+
+// CNN PREDICTION
+function CNNpredict(input) {
+    console.log("CNN Predict called")
+    prediction = pythonCNN(input);
+
+    var predictDisplay = prediction;
+    var output = document.getElementById("prediction");
+    output.innerHTML = predictDisplay;
+    
+    erase();
+    $("body").removeClass("loading-cursor");
+}
+
+function pythonCNN(input){
+    console.log("python CNN func called with ");
+
+    input = JSON.stringify(input);
+    
+    // console.log("converted?  "+input);
+    $.ajax({
+        type : 'POST',
+        url : "/CNNpredict",
+        dataType : "json",
+        contentType: 'application/json;charset=UTF-8',
+        data : JSON.stringify({"input":input}),
+        success:callbackFuncCNN
+    });
+}
+
+function callbackFuncCNN(response) {
+    console.log("Callback RESPONSE is:");
+    console.log(response)
+    var value = response["result"];
+    console.log(value);
+    var norm_value = normalizeCNN(value);
+    norm_value = norm_value.toFixed(2);
+
+    $("#cnn-text-main").text(norm_value);
+    updateCNNvalues(norm_value);
+    erase();
+}
+
+var base_factor = 'none';
+var normalized;
+function normalizeCNN(value){
+    console.log("normalizing with: "+value)
+    if (base_factor == 'none'){
+        base_factor = value;
+        return 1
+    }
+    console.log("base: "+base_factor);
+
+    normalized = value/base_factor;
+    return normalized
+}
+function baseChange(ind){
+    conversion_factor = cnn_values[ind];
+    console.log("conv fac "+conversion_factor);
+
+    console.log(cnn_values[0]);
+    var j;
+    for (j = 0; j < 6; j++) {
+        var v = cnn_values[j] / conversion_factor
+        cnn_values[j] = v.toFixed(2); 
+    }
+    // cnn_values = cnn_values/conversion_factor; 
+    console.log(cnn_values[0]);
+
+    base_factor = 1/(base_factor*conversion_factor);
+    var i;
+    for (i = 0; i < 6; i++) {
+        id = "saved-cnn"+i;
+        t = cnn_values[i]
+        $("#"+id).text(t);
+        }
 }
 
 function reshapeArray(array, wd, channels) {
@@ -459,47 +452,6 @@ function reshapeArray(array, wd, channels) {
     return arr2
 }
 
-function BOTHpredict() {
-    $("body").addClass("loading-cursor");
-
-    CNNpredict();
-    VAEpredict();
-}
-function resetResults() {
-    var output1 = document.getElementById("prediction");
-    output1.innerHTML = "";
-}
-
-
-
-// function TensorToImage2(tensor) {
-//     console.log("start tensor to image");
-//     //get the tensor shape
-//     const [width, height] = tensor.shape;
-//     //create a buffer array
-//     const buffer = new Uint8ClampedArray(width * height * 4);
-//     //create an Image data var 
-//     const imageData = new ImageData(width, height);
-//     //get the tensor values as data
-//     const data = tensor.dataSync();
-//     //map the values to the buffer
-//     var i = 0;
-//     for(var y = 0; y < height; y++) {
-//         for(var x = 0; x < width; x++) {
-//             var pos = (y * width + x) * 4;      // position in buffer based on x and y
-//             buffer[pos  ] = data[i];             // some R value [0, 255]
-//             buffer[pos+1] = data[i+1];           // some G value
-//             buffer[pos+2] = data[i+2];           // some B value
-//             buffer[pos+3] = 255;                // set alpha channel
-//             i+=3;
-//         }
-//     }f
-//     //set the buffer to the image data
-//     imageData.data.set(buffer);
-//     //show the image on canvas
-//     document.getElementById("predict-img").src = imageData;
-//     // ctx.putImageData(imageData, 0, 0);
-// };
 
 
 
@@ -606,7 +558,12 @@ function sliderPredict() {
         Number(slider8.value),
         Number(slider9.value),
     ];
-    pythonVAE(sliderArray);
+    // need to figure out how to manage length of vector, 
+    // for now just remove 1 when length of 8 is needed
+    sliderArray.pop();
+
+    console.log("slider arrat iput"+sliderArray);
+    VAEdecoderRequest(sliderArray);
     scrollTo(0,0);
 }
 function resetSliders() {
@@ -632,16 +589,27 @@ function resetSliders() {
     sliderValue8.innerHTML = default_value;
     sliderValue9.innerHTML = default_value;
 } 
-function randomSliders() {
-    slider1.value = Math.random()*4-2;
-    slider2.value = Math.random()*4-2;
-    slider3.value = Math.random()*4-2;
-    slider4.value = Math.random()*4-2;
-    slider5.value = Math.random()*4-2;
-    slider6.value = Math.random()*4-2;
-    slider7.value = Math.random()*4-2;
-    slider8.value = Math.random()*4-2;
-    slider9.value = Math.random()*4-2;
+function updateSliders(vector) {
+    console.log("update with "+vector)
+    console.log("len "+vector.length)
+    console.log("0 "+vector[0])
+    console.log("00 "+vector[0][0])
+    console.log("01 "+vector[0][1])
+    vector = vector[0]
+
+
+    if (vector.length == 8) {
+        vector.push(0);
+    }
+    slider1.value = vector[0];
+    slider2.value = vector[1];
+    slider3.value = vector[2];
+    slider4.value = vector[3];
+    slider5.value = vector[4];
+    slider6.value = vector[5];
+    slider7.value = vector[6];
+    slider8.value = vector[7];
+    slider9.value = vector[8];
     // setting text to default
     sliderValue1.innerHTML = slider1.value;
     sliderValue2.innerHTML = slider2.value;
@@ -652,27 +620,79 @@ function randomSliders() {
     sliderValue7.innerHTML = slider7.value;
     sliderValue8.innerHTML = slider8.value;
     sliderValue9.innerHTML = slider9.value;
-    CNNpredict();
-
-    sliderPredict();
 } 
 
 
 // UPDATE SAVED IMAGES
-var index = 0;
+var saved_index = 0;
 var paths = [];
+var saved0 = document.getElementById("saved0");
+var saved1 = document.getElementById("saved1");
+var saved2 = document.getElementById("saved2");
+var saved3 = document.getElementById("saved3");
+var saved4 = document.getElementById("saved4");
+var saved5 = document.getElementById("saved5");
+var allSaved = [saved0,saved1,saved2,saved3,saved4,saved5]
 function updateSaved(img) {
-    paths[index] = img;
-    $("#saved0").attr("src",paths[0]);
-    $("#saved1").attr("src",paths[1]);
-    $("#saved2").attr("src",paths[2]);
-    $("#saved3").attr("src",paths[3]);
-    $("#saved4").attr("src",paths[4]);
-    $("#saved5").attr("src",paths[5]);
-    $("#saved6").attr("src",paths[6]);
-    $("#saved7").attr("src",paths[7]);
-    $("#saved8").attr("src",paths[8]);
-    $("#saved9").attr("src",paths[9]);
-    $("#saved10").attr("src",paths[10]);
-    index +=1
+    if (saved_index == 5) {
+        alert("Max number of sketches reached!")
+    }
+    else {
+        paths[saved_index] = img;
+        $("#saved0").attr("src",paths[0]);
+        $("#saved1").attr("src",paths[1]);
+        $("#saved2").attr("src",paths[2]);
+        $("#saved3").attr("src",paths[3]);
+        $("#saved4").attr("src",paths[4]);
+        $("#saved5").attr("src",paths[5]);
+        saved_index +=1
+        
+        saved0 = document.getElementById("saved0");
+        saved1 = document.getElementById("saved1");
+        saved2 = document.getElementById("saved2");
+        saved3 = document.getElementById("saved3");
+        saved4 = document.getElementById("saved4");
+        saved5 = document.getElementById("saved5");
+        allSaved = [saved0,saved1,saved2,saved3,saved4,saved5]
+
+        console.log(allSaved)
+    }
+}
+function resetSaved() {
+    let m = confirm("Want to clear all your sketches?");
+    if (m) {
+        saved_index = 0;
+        paths = [];
+        cnn_values = [];
+        base_factor = "none";
+        $("#saved0").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved1").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved2").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved3").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved4").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved5").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+    }
+}
+function activeSaved(num) {
+    console.log("sketch was clicked!");
+    // console.log(allSaved);
+    baseChange(num);
+    for (i = 0; i < 6; i++) {
+        id = "saved"+i;
+        if (i == num) {
+            $("#"+id).addClass("activeSaved");
+        }
+        else {
+            $("#"+id).removeClass("activeSaved");
+        }
+    }
+}
+
+var cnn_values = [];
+
+function updateCNNvalues(val){
+    cnn_values.push(val);
+    i = cnn_values.length - 1;
+    $("#saved-cnn"+i).text(val);
+    $("#cnn-values-test").text(cnn_values);
 }

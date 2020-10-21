@@ -16,25 +16,29 @@
 
 /* MINE */
 :root {
-    --teal-color: rgb(44, 196, 188);
+    --blue-color: rgb(0, 117, 255);
     --nav-height: 70px;
+    --background:  rgb(219, 219, 219);
+    --main-text-color: rgb(23, 24, 26);
+    --canvas-color: rgb(255, 255, 255);
+
 }
 
 
 html,body{
     font-family: 'DM Sans',serif;
     font-size:15px;line-height:1; 
-    background-color: #2C2C2C;
+    background-color: var(--background);
     margin:0;
 }
 html{overflow-x:hidden}
 h1{font-size:36px}
 h2{font-size:30px}
 /*h3 menus*/
-h3{font-size:24p; color:white;}
-h4{font-size:20px; color:white}
-h5{font-size:18px; color:white}
-h6{font-size:16px; color:white}
+h3{font-size:24p; color:var(--main-text-color);}
+h4{font-size:20px; color:var(--main-text-color);}
+h5{font-size:18px; color:var(--main-text-color);}
+h6{font-size:16px; color:var(--main-text-color);}
 .loading-cursor {
     cursor: progress;
 }
@@ -45,14 +49,15 @@ h6{font-size:16px; color:white}
     margin-top: var(--nav-height);
 }
 #nav {
-    background-color: black;
+    /* background-color: rgba(219, 219, 219, .5); */
+    background-image: linear-gradient( rgba(219, 219, 219, 1),  rgba(219, 219, 219, .6), rgba(219, 219, 219, 0));
     width: 100%;
     height: var(--nav-height);
     margin: 0;
     padding:0;
     position:fixed;
     top: 0;
-    color: white;
+    color: var(--main-text-color);
     vertical-align: top;
     z-index: 2;
 }
@@ -63,7 +68,8 @@ h6{font-size:16px; color:white}
     margin: 0;
     padding: 0;
     vertical-align: middle;
-    color: white;
+    color: var(--main-text-color);
+
 
 }
 #nav-middle {
@@ -93,9 +99,9 @@ h6{font-size:16px; color:white}
     display: inline-block;
     margin: 0 -2px;
     padding: 0 15px;
-    color: white;
+    color: var(--main-text-color);
 }
-.menu-hover:hover{background-color:#2C2C2C}
+.menu-hover:hover{background-color:#0000001a}
 
 #canvas-container {
     text-align: center;
@@ -106,6 +112,7 @@ h6{font-size:16px; color:white}
     height: 100%;
     display: inline-block;
     margin: 0;
+    position: relative;
 }
 #gap-box {
     width: 27px;
@@ -125,15 +132,18 @@ h6{font-size:16px; color:white}
     padding: 0;
 }
 #myCanvas {
-    background-color: white;
+    background-color: var(--canvas-color);
+}
+#predCanvas {    
+    background-color: var(--canvas-color);
+    /* vertical-align: top; */
+    /* margin-top: -100px; */
+    transform: translateY(-4px);
     
 }
-#predCanvas {
-    background-color: white;
 
-}
 .loading-div {
-    color: white;
+    color: var(--main-text-color);
     text-align: center;
     font-style: italic;
     font-size: 30px;
@@ -149,10 +159,11 @@ h6{font-size:16px; color:white}
     margin: 0;
 }
 .button, .notbutton {
-    background-color: #cccccc;
+    font: serif;
+    background-color: rgb(184, 184, 184);
     border: none;
     /* font-family: 'DM Sans'; */
-    color: black;
+    color: rgb(0, 0, 0);
     text-align: center;
     text-decoration: none;
     width: 168px;
@@ -166,10 +177,13 @@ h6{font-size:16px; color:white}
     font-size: 16px;
     margin: 4px 2px;*/
     cursor: pointer; 
+    transition: 3ms;
 }
-.button:hover{background-color: rgb(128, 128, 128);  }
+.notbutton{background-color: rgba(255, 0, 0, 0);}
+.canvas-btn {width:180px;}
+.button:hover{background-color: var(--blue-color); color: white;}
 .notbutton {
-    margin: -2.5px 0;
+    /* margin: -2.5px 0; */
     cursor: auto; 
 }
 .button3{
@@ -177,9 +191,13 @@ background-color: rgb(155, 155, 155);
 }
 .button3:hover{background-color: rgb(231, 61, 61);  
 }
-
+.saving-btn {
+    margin: 6px;
+    height: 50px;
+    vertical-align: top;
+}
 #plot {
-    background-color: #5F5F5F;
+    background-color: #ffffff;
     margin: 0;
     text-align: center;
     width: 336px;
@@ -187,11 +205,11 @@ background-color: rgb(155, 155, 155);
     top: 0;
 }
 #plot2 {
-    background-color: #5F5F5F;
+    background-color: var(--canvas-color);
     margin: 0;
     text-align: center;
     width: 332px;
-    height: 168px;
+    height: 192px;
     padding-left: 4px;
     display: block;
     position: relative;
@@ -200,16 +218,16 @@ background-color: rgb(155, 155, 155);
     -webkit-appearance: none;
     /* appearance: none; */
     height: 8px;
-    width: 135px;
+    width: 152px;
     outline: none;
     border-radius: 4px;
-    background-color: #888888;
+    background-color: #dadada;
     /* opacity: 0.7; */
     /* -webkit-transition: .2s; */
     /* transition: opacity .2s; */
     transform: rotate(270deg);
     padding: none;
-    margin: 72px -51.4px 0;
+    margin: 84px -59.85px 0;
     vertical-align: middle; 
     /* color: hotpink; */
 }
@@ -227,7 +245,7 @@ background-color: rgb(155, 155, 155);
     
 }
 .slider-text {
-    color: white;
+    color: var(--main-text-color);
     height: 100%;
     vertical-align: baseline;
     display: inline-block;
@@ -236,28 +254,60 @@ background-color: rgb(155, 155, 155);
     margin: 0 6px 5px;
 }
 #images-container {
-    background-color: #3A3A3A;
-    margin-top: 25px;
+    background-color: #ebebeb;
+    margin-top: 75px;
     width: 100%;
     /* height: 300px; */
     text-align: center;
     padding: 25px 0;
+    text-align: center;
+}
+#single-image-container {
+    position: relative;
+    height: 180px;
+    width: 180px;
+    margin: 7px;
+    display: inline-block;
 }
 .saved {
     background-color: white;
-    height: 200px;
-    width: 200px;
-    margin: 7px;
-
-
+    height: 180px;
+    width: 180px;
 }
-
-
+.saved:hover {
+    cursor: pointer;
+}
+.activeSaved {
+    outline: 2px solid var(--blue-color);
+}
+.invisible-template {
+    display: none;
+}
+.visible-template {
+    display: block;
+}
+.cnn-text-main{
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    font-size: 40px;
+    font-weight: bolder;
+    line-height: 0;
+}
+.cnn-text{
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    font-size: 20px;
+    font-weight: bolder;
+    line-height: 0;
+}
 /* MAIN TEXT SECTION */
 #main-text {
     /* background-color: rgb(63, 92, 20); */
     padding: 10px 100px;
-    color: white;
+    color: var(--main-text-color);
+
 }
 
 
