@@ -374,12 +374,6 @@ background-color: rgb(155, 155, 155);
     padding: 20px 0px;
 }
 
-#box-left {
-    /* background: rgb(139, 187, 209); */
-}
-#box-right {
-    /* background: rgb(201, 134, 159) */
-}
 
 #interpolation-box {
     float: left;
@@ -396,9 +390,6 @@ background-color: rgb(155, 155, 155);
     /* border: blue solid 1px; */
 }
 
-.sketch-img {
-    /* background-color: rgba(0,0,0,0.12); */
-}
 
 .predict-img {
     /* height: 407.5px;
