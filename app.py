@@ -13,6 +13,8 @@ from PIL import Image
 import numpy as np
 from skimage.transform import resize, rescale
 from functools import lru_cache
+from scipy.interpolate import griddata
+
 
 try:
     import simplejson as json
@@ -183,6 +185,66 @@ def CNNpredict():
     # vector_list = vector.tolist()
 
     return jsonify({"result": prediction})
+
+@app.route('/CNNpredictVector', methods=['GET','POST'])
+def CNNpredictVector():
+    JSinput = request.get_json()
+    lst = json.loads(JSinput["input"])
+
+    return jsonify({"result": prediction})
+
+     
+
+@app.route('/interpolation', methods=['GET','POST'])
+def interpolation():
+    img_width = 72
+    img_height = 72
+    num_channels = 3
+    
+    JSinput = request.get_json()
+    input1 = json.loads(JSinput["input1"])
+    input2 = json.loads(JSinput["input2"])
+    num_of_int = json.loads(JSinput["number"])
+    print("latent vector: ",input1)
+
+    output_image1 = np.asarray(input1)
+    print("nparray: ",output_image1)
+    output_image2 = np.asarray(input2)
+    
+    shape1 = 2
+    shape2 = 8
+    
+    # data = np.zeros([shape1,shape2])
+    data = [output_image1,output_image2]
+
+    
+    start_int = output_image1
+    end_int = output_image2
+    num_samples = num_of_int
+    dim = shape2 # data doesnt have shape since its transfered from js
+    
+    # Initialize grid space depending on number of latent space vectors and number of intended samples
+    grid_space = np.zeros([dim, num_samples])
+    print("grid_space")
+    print(grid_space)
+    for i in range(dim):
+        print("shp1 ",start_int.shape)
+        print("shp2 ",end_int.shape)
+        grid_space[i] = np.linspace(start_int[i], end_int[i], num=num_samples)
+    print("GRID SPACE:\n",grid_space)
+
+    # Plot results
+    all_ints = []
+    for i in range(num_samples):
+        img = np.array([grid_space[:,i]])
+        print("img: ", img)
+        img_int = decoder.predict(img)
+        int_dec = img_int.reshape(img_width, img_height, num_channels)
+        int_dec = int_dec.tolist()
+        all_ints.append(int_dec)
+        
+    return jsonify({"int_list": all_ints})
+
 
 
 @app.route('/favicon.ico')
