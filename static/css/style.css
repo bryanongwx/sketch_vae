@@ -293,7 +293,7 @@ background-color: rgb(155, 155, 155);
     cursor: pointer;
 }
 .activeSavedint {
-    border: 5px solid rgb(236, 9, 47);
+    outline: 2px solid var(--blue-color);
 }
 .activeSaved {
     outline: 2px solid var(--blue-color);

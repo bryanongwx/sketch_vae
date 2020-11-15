@@ -722,9 +722,6 @@ function updateCNNvalues(val){
 
 var selectedInt = [0,1]
 function intSelect(num) {
-    console.log("sketch was clicked! "+num);
-    console.log("beg "+selectedInt);
-
     for (i = 0; i < 6; i++) {
         id = "saved"+i;
         if (i == num) {
@@ -734,7 +731,6 @@ function intSelect(num) {
     }
     remove = selectedInt.shift();
     $("#saved"+remove).removeClass("activeSavedint");
-    console.log("end "+selectedInt);
 }
 
 var intSlider = document.getElementById("int-slider");
@@ -877,18 +873,14 @@ function switchCanvas(){
             findxy('out', e)
         }, false);
 
-    } else {
-        // intCanvas0 = document.getElementById('intCanvas0');
-        // int_ctx0 = intCanvas0.getContext("2d");
-        // intCanvas1 = document.getElementById('intCanvas1');
-        // int_ctx1 = intCanvas1.getContext("2d");
-        // intCanvas2 = document.getElementById('intCanvas2');
-        // int_ctx2 = intCanvas2.getContext("2d");
-        // intCanvas3 = document.getElementById('intCanvas3');
-        // int_ctx3 = intCanvas3.getContext("2d");
-        // intCanvas4 = document.getElementById('intCanvas4');
-        // int_ctx4 = intCanvas4.getContext("2d");
+        $("#saved0").addClass("activeSaved");
+        for (i = 0; i < 6; i++) {
+            id = "saved"+i;
+            $("#"+id).removeClass("activeSavedint");
+        }
+        console.log(document.getElementById("saved0").classList)
 
+    } else {
         transferCanvas = document.getElementById('transferCanvas');
         transferCtx = transferCanvas.getContext("2d");
         intCanvasStart = document.getElementById('intStart');
@@ -903,8 +895,7 @@ function switchCanvas(){
         intCanvas8 = document.getElementById('int8');
         intCanvasEnd = document.getElementById('intEnd');
 
-        console.log("getting other canvas");        
-
+        console.log("getting other canvas");
 
         canvas = document.getElementById('interpolationCanvas');
         ctx = canvas.getContext("2d");
@@ -925,9 +916,16 @@ function switchCanvas(){
             findxy('out', e)
         }, false);
 
+        for (i = 0; i < 6; i++) {
+            id = "saved"+i;
+            $("#"+id).removeClass("activeSaved");
+        }
+
+        $("#saved0").addClass("activeSavedint");
+        $("#saved1").addClass("activeSavedint");
+        console.log(document.getElementById("saved0").classList)
     }
 }
-
 
 function toTop() {
     window.scrollTo(0,0);

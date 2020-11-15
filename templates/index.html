@@ -137,7 +137,7 @@
     
     <!-- INTERPOLATION PANEL -->
     <div id="option1" class="invisible-template">    
-      <!-- <div id="slideout">
+      <div id="slideout" style="display: none;">
         <div id="canvas-box">
           <canvas id="interpolationCanvas" class="canvas" width="360" height="360"></canvas>
           <div id="button-box">
@@ -146,7 +146,7 @@
           </div>
         </div>
 
-      </div> -->
+      </div>
       
       <div style="text-align: center;">   
         <div id="int-container">           
@@ -166,17 +166,17 @@
       <div style="text-align: center;">   
         <button class="button canvas-btn" id="" onclick="interpolationRequest()">interpolate</button><br><br>
         <input type="range" min="1" max="4" value="3" step='1' class="" id="int-slider"><br>
-        <p id="intSliderValue" class="slider-text">3</p>
+        <p id="intSliderValue"  style="font-weight: bold;" class="slider-text">3</p>
       </div>
     </div>
     
     <div id="images-container">
         <div id="single-image-container">
-          <img id="saved0" class="saved activeSaved activeSavedint" onclick=activeSaved(0)>
+          <img id="saved0" class="saved activeSaved" onclick=activeSaved(0)>
           <p id="saved-cnn0" class="cnn-text">0.00</p>
         </div>
         <div id="single-image-container">
-          <img id="saved1" class="saved activeSavedint" onclick=activeSaved(1)>
+          <img id="saved1" class="saved" onclick=activeSaved(1)>
           <p id="saved-cnn1" class="cnn-text">0.00</p>
         </div>
         <div id="single-image-container">
