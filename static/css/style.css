@@ -2,21 +2,24 @@
 #main {margin-left: 170px}
 .w3-p {font-size: 100px}
 @media only screen and (max-width: 600px) {#main {margin-left: 0}} */
-
-/* #canvas-container {
-    border: 2px dashed pink;
+/* 
+#canvas-container {
+    border: red 2px dashed;
 }
 #canvas-box, #gap-box {
     border: orange 2px solid;
 }
 #plot-container {
     border: 2px dashed greenyellow;
+}
+#button-box {
+    border: pink solid 2px;
 } */
 
 
 /* MINE */
 :root {
-    --blue-color: rgb(0, 117, 255);
+    --blue-color: rgb(52, 94, 233);
     --nav-height: 70px;
     --background:  rgb(219, 219, 219);
     --main-text-color: rgb(23, 24, 26);
@@ -25,8 +28,9 @@
 }
 
 
-html,body{
-    font-family: 'DM Sans',serif;
+html,body, .button, .notbutton{
+    font-family: 'DM Sans',monospace;
+    font-family: 'Roboto',monospace;
     font-size:15px;line-height:1; 
     background-color: var(--background);
     margin:0;
@@ -45,7 +49,7 @@ h6{font-size:16px; color:var(--main-text-color);}
 #top {position: absolute;top: 0;z-index: 0;}
 #main-container {
     /* background-color:rgb(190, 92, 26); */
-    padding-top: 20px;
+    padding-top: 0px;
     margin-top: var(--nav-height);
 }
 #nav {
@@ -105,8 +109,9 @@ h6{font-size:16px; color:var(--main-text-color);}
 
 #canvas-container {
     text-align: center;
-    margin: 20px 0;
-    height: 366px;
+    margin: 0px 0;
+    height: 360px;
+    height: auto;
 }
 #int-container {
     text-align: center;
@@ -116,6 +121,7 @@ h6{font-size:16px; color:var(--main-text-color);}
 #canvas-box, #gap-box {
     height: 100%;
     display: inline-block;
+    vertical-align: top;
     margin: 0;
     position: relative;
 }
@@ -126,8 +132,9 @@ h6{font-size:16px; color:var(--main-text-color);}
     display: inline-block;
     width: 336px;
     height: 100%;
-    margin: 0;
+    margin: 0 8px;
     padding: 0;
+    vertical-align: top;
     /* position: relative;
     top: -126px; */
 }
@@ -150,7 +157,7 @@ h6{font-size:16px; color:var(--main-text-color);}
     background-color: var(--canvas-color);
     /* vertical-align: top; */
     /* margin-top: -100px; */
-    transform: translateY(-4px);
+    /* transform: translateY(-4px); */
     
 }
 
@@ -164,39 +171,54 @@ h6{font-size:16px; color:var(--main-text-color);}
 .invisible {
     display: none;
 }
+.visible-block {
+    display: block;
+}
 .visible-inline-block {
     display: inline-block;
 }
 #button-box {
     display: block;
     width: 100%;
-    height: 30px;
+    height: auto;
     margin: 0;
+    margin-top: 8px;
+}
+#button-box2 {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    margin-top: 4px
 }
 .button, .notbutton {
-    font: serif;
+    /* font: serif; */
     background-color: rgb(184, 184, 184);
     border: none;
-    /* font-family: 'DM Sans'; */
-    color: rgb(0, 0, 0);
+    outline: none;
+
+    /* font-family: 'serif'; */
+    color: rgb(49, 49, 49);
     text-align: center;
     text-decoration: none;
-    width: 168px;
-    height: 100%;
-    font-size: 18px;
+    width: 140px;
+    height: 30px;
+    font-size: 20px;
     font-weight: bold;
-    margin: -2.5px -2px;
+    margin: -2.5px 2px;
     /* padding: 3px 0; */
     /* border-radius: 2px; */
     /* display: inline-block;
     font-size: 16px;
     margin: 4px 2px;*/
     cursor: pointer; 
-    transition: 3ms;
+    transition: .25s;
+    border-radius: 5px;
 }
 .notbutton{background-color: rgba(255, 0, 0, 0);}
-.canvas-btn {width:180px;}
-.button:hover{background-color: var(--blue-color); color: white;}
+.canvas-btn {width:130px;}
+.slider-btn {width:130px;}
+.button:hover, #option0-btn:hover, #option1-btn:hover{background-color: var(--blue-color); color: white;}
 .notbutton {
     /* margin: -2.5px 0; */
     cursor: auto; 
@@ -207,8 +229,8 @@ background-color: rgb(155, 155, 155);
 .button3:hover{background-color: rgb(231, 61, 61);  
 }
 .saving-btn {
-    margin: 6px;
-    height: 50px;
+    margin: 3px;
+    height: 45px;
     vertical-align: top;
 }
 #plot {
@@ -231,20 +253,37 @@ background-color: rgb(155, 155, 155);
 }
 .slider {
     -webkit-appearance: none;
-    /* appearance: none; */
     height: 8px;
     width: 152px;
     outline: none;
-    border-radius: 4px;
+    border-radius: 3px;
     background-color: #dadada;
-    /* opacity: 0.7; */
-    /* -webkit-transition: .2s; */
-    /* transition: opacity .2s; */
     transform: rotate(270deg);
     padding: none;
     margin: 84px -59.85px 0;
-    vertical-align: middle; 
-    /* color: hotpink; */
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    background: var(--blue-color);
+    cursor: grab;
+    margin-top: 0px;
+}
+input[type=range]::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    
+}
+#int-slider {
+    -webkit-appearance: none;
+    height: 8px;
+    width: 152px;
+    outline: none;
+    border-radius: 3px;
+    background-color: #ffffff;
+    padding: none;
 }
 #plot2-text{
     /* display: block; */
@@ -269,19 +308,19 @@ background-color: rgb(155, 155, 155);
     margin: 0 6px 5px;
 }
 #images-container {
-    background-color: #ebebeb;
-    margin-top: 75px;
+    /* background-color: #ebebeb; */
+    margin-top: 24px;
     width: 100%;
     /* height: 300px; */
     text-align: center;
-    padding: 25px 0;
+    padding: 0px 0;
     text-align: center;
 }
 #single-image-container {
     position: relative;
     height: 180px;
     width: 180px;
-    margin: 7px;
+    margin: 0 7px;
     display: inline-block;
 }
 .saved {
@@ -320,6 +359,36 @@ background-color: rgb(155, 155, 155);
     font-weight: bolder;
     line-height: 0;
 }
+#option0-btn, #option1-btn {
+    display: inline;
+    outline: none;
+    text-align: center;
+    text-decoration: none;
+    width: 160px;
+    height: 38px;
+    padding: 0px 8px;
+    font-size: 24px;
+    margin: 0px -4px;
+    cursor: p ointer;
+    transition: .25s;
+    border-radius: 6px 0px 0px 6px;
+}
+#option1-btn {
+    border-radius: 0px 6px 6px 0px;
+}
+.optionInactive {
+    background-color: rgb(255, 255, 255);
+    font-weight: normal;
+    color: rgb(139, 139, 139);
+    /* color: white; */
+}
+.optionActive {
+    background-color: white;
+    font-weight: bold;
+    color: black;
+}
+
+
 /* MAIN TEXT SECTION */
 #main-text {
     /* background-color: rgb(63, 92, 20); */
@@ -327,6 +396,8 @@ background-color: rgb(155, 155, 155);
     color: var(--main-text-color);
 
 }
+
+
 
 
 
@@ -399,6 +470,9 @@ background-color: rgb(155, 155, 155);
     width: 632px;
     background-color: rgb(185, 185, 185);
 
+}
+#interpolate-btn {
+    display: inline;
 }
 
 .interpolation-img {

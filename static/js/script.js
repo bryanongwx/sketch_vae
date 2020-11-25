@@ -24,6 +24,7 @@ var canvas, ctx, flag = false,
     intCanvas7,
     intCanvas8;
 
+
 var panel_index= 0;
 
 const canvas_size = 360 
@@ -278,16 +279,14 @@ var current_vector;
 function callbackFuncVAE(response) {
     console.log("callback func called");
     let vec = response["vector"];
-    console.log("vector response: "+vec);
+    // console.log("vector response: "+vec);
     current_vector = vec[0];
-    console.log("cv: "+current_vector);
     
     updateSliders(vec);
     TensorToImage(response["result"], canvas2, ctx2);
 }
 
 function TensorToImage(rgbdata_reshaped, cnv, cnv_ctx, scale=5) {
-    console.log("cv2: "+current_vector);
 
     var hgt = 72;
     var wdt = 72;
@@ -344,6 +343,8 @@ function callbackFuncCNN(response) {
     // console.log(response)
     var value = response["result"];
     // console.log(value);
+    console.log("baseFactor0: "+base_factor)
+
     var norm_value = normalizeCNN(value);
     norm_value = norm_value.toFixed(2);
 
@@ -356,24 +357,31 @@ function callbackFuncCNN(response) {
 var base_factor = 'none';
 var normalized;
 function normalizeCNN(value){
-    // console.log("normalizing with: "+value)
+    console.log("normalizing with: "+value)
+    console.log("baseFactor1: "+base_factor)
     if (base_factor == 'none'){
         base_factor = value;
+        console.log("baseFactor2: "+base_factor)
         return 1
     }
-    // console.log("base: "+base_factor);
+    console.log("baseFactor2: "+base_factor);
 
     normalized = value/base_factor;
     return normalized
 }
 function baseChange(ind){
     conversion_factor = cnn_values[ind];
-    // console.log("conv fac "+conversion_factor);
+    console.log("base change "+cnn_values);
+    console.log("baseFactor3: "+base_factor);
 
     // console.log(cnn_values[0]);
     var j;
-    for (j = 0; j < 6; j++) {
-        var v = cnn_values[j] / conversion_factor
+    for (j = 0; j < cnn_values.length; j++) {
+        
+        var v = cnn_values[j]
+        if (v != 0){
+            v = cnn_values[j] / conversion_factor
+        }
         cnn_values[j] = v.toFixed(2); 
     }
     // cnn_values = cnn_values/conversion_factor; 
@@ -381,18 +389,19 @@ function baseChange(ind){
 
     base_factor = 1/(base_factor*conversion_factor);
     var i;
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < cnn_values.length; i++) {
         id = "saved-cnn"+i;
         t = cnn_values[i]
         $("#"+id).text(t);
         }
+
 }
 
 function reshapeArray(array, wd, channels) {
     var arr1 = [];
     for(var i=0; i< array.length; i+=channels){ 
         let newArray = [];
-        for(var j=0; j< channels; j++){ 
+        for(var j=0; j< channels; j++){
             newArray.push(array[i+j]);
         }
         arr1.push(newArray);
@@ -407,8 +416,6 @@ function reshapeArray(array, wd, channels) {
     }
     return arr2
 }
-
-
 
 
 // for downloads
@@ -559,6 +566,7 @@ function sliderPredict() {
         Number(slider7.value),
         Number(slider8.value),
     ];
+    // need to make sure this data is collecting correctly from the right side canvas
     var pred = new Image();
     pred.onload = function() {
         ctx.drawImage(pred, 0, 0, canvas_size, canvas_size);
@@ -639,12 +647,12 @@ var saved3 = document.getElementById("saved3");
 var saved4 = document.getElementById("saved4");
 var saved5 = document.getElementById("saved5");
 var allSaved = [saved0,saved1,saved2,saved3,saved4,saved5];
-var data0 = {"src": "","perf": "", "data":"", "vector":""}
-var data1 = {"src": "","perf": "", "data":"", "vector":""}
-var data2 = {"src": "","perf": "", "data":"", "vector":""}
-var data3 = {"src": "","perf": "", "data":"", "vector":""}
-var data4 = {"src": "","perf": "", "data":"", "vector":""}
-var data5 = {"src": "","perf": "", "data":"", "vector":""}
+var data0 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
+var data1 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
+var data2 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
+var data3 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
+var data4 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
+var data5 = {"src": "","perf": "", "data":"", "vector":"", "empty":true}
 var datas = [data0,data1,data2,data3,data4,data5];
 
 function updateSaved(img) {
@@ -656,8 +664,8 @@ function updateSaved(img) {
         paths[saved_index] = img;
         datas[saved_index]["src"] = img;
         datas[saved_index]["data"] = current_img_data;
-        console.log("updtSaved "+current_vector);
         datas[saved_index]["vector"] = current_vector;
+        datas[saved_index]["empty"] = false;
         // console.log("cur img data: "+current_img_data);
         $("#saved0").attr("src",paths[0]);
         $("#saved1").attr("src",paths[1]);
@@ -667,15 +675,19 @@ function updateSaved(img) {
         $("#saved5").attr("src",paths[5]);
         saved_index +=1
         
-        saved0 = document.getElementById("saved0");
-        saved1 = document.getElementById("saved1");
-        saved2 = document.getElementById("saved2");
-        saved3 = document.getElementById("saved3");
-        saved4 = document.getElementById("saved4");
-        saved5 = document.getElementById("saved5");
-        allSaved = [saved0,saved1,saved2,saved3,saved4,saved5]
+        if (no_sketches == true) {
+            $("#saved0").addClass("activeSaved");                            
+            no_sketches = false;
+        }
+        // saved0 = document.getElementById("saved0");
+        // saved1 = document.getElementById("saved1");
+        // saved2 = document.getElementById("saved2");
+        // saved3 = document.getElementById("saved3");
+        // saved4 = document.getElementById("saved4");
+        // saved5 = document.getElementById("saved5");
+        // allSaved = [saved0,saved1,saved2,saved3,saved4,saved5]
 
-        // console.log(allSaved)
+        // // console.log(allSaved)
     }
 }
 function resetSaved() {
@@ -685,29 +697,73 @@ function resetSaved() {
         paths = [];
         cnn_values = [];
         base_factor = "none";
-        $("#saved0").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
-        $("#saved1").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
-        $("#saved2").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
-        $("#saved3").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
-        $("#saved4").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
-        $("#saved5").attr("src","https://i.ya-webdesign.com/images/blank-png-1.png");
+        $("#saved0").attr("src","/static/img/blank.png");
+        $("#saved1").attr("src","/static/img/blank.png");
+        $("#saved2").attr("src","/static/img/blank.png");
+        $("#saved3").attr("src","/static/img/blank.png");
+        $("#saved4").attr("src","/static/img/blank.png");
+        $("#saved5").attr("src","/static/img/blank.png");
+        
+        $("#saved-cnn0").text("0");       
+        $("#saved-cnn1").text("0");
+        $("#saved-cnn2").text("0");
+        $("#saved-cnn3").text("0");
+        $("#saved-cnn4").text("0");
+        $("#saved-cnn5").text("0");
+        no_sketches = true;
+        activeSaved("start");
+        $("#saved-cnn0").removeClass("visible-block");
+        $("#saved-cnn1").removeClass("visible-block");
+        $("#saved-cnn2").removeClass("visible-block");
+        $("#saved-cnn3").removeClass("visible-block");
+        $("#saved-cnn4").removeClass("visible-block");
+        $("#saved-cnn5").removeClass("visible-block");
+        $("#saved-cnn0").addClass("invisible");
+        $("#saved-cnn1").addClass("invisible");
+        $("#saved-cnn2").addClass("invisible");
+        $("#saved-cnn3").addClass("invisible");
+        $("#saved-cnn4").addClass("invisible");
+        $("#saved-cnn5").addClass("invisible");
+
+        for (i = 0; i < 6; i++) {
+            datas[i]["src"] = "";
+            datas[i]["data"] = "";
+            datas[i]["vector"] = "";
+            datas[i]["empty"] = true;
+        }
+
     }
 }
+
+var no_sketches = true;
+var rememberActive = 0;
 function activeSaved(num) {
-    // console.log("sketch was clicked!");
-    // console.log(allSaved);
-    baseChange(num);
-    for (i = 0; i < 6; i++) {
-        id = "saved"+i;
-        if (i == num) {
-            $("#"+id).addClass("activeSaved");
+    if (num == "start"){
+        for (i = 0; i < 6; i++) {
+            $("#saved"+i).removeClass("activeSaved");
         }
-        else {
-            $("#"+id).removeClass("activeSaved");
+    } else {
+        console.log(datas[num]["empty"]);
+        if (datas[num]["empty"] == true){
+            console.log("empty sketch!");
+        } else {
+            if (panel_index == 0){
+                for (i = 0; i < 6; i++) {
+                    id = "saved"+i;
+                    if (i == num) {
+                        $("#"+id).addClass("activeSaved");
+                    }
+                    else {
+                        $("#"+id).removeClass("activeSaved");
+                    }
+                }
+                rememberActive = num;
+                baseChange(num);
+
+            } else if (panel_index == 1) {
+                intSelect(num);
+            }
         }
-    }
-    if (panel_index == 1){
-        intSelect(num);
     }
 }
 
@@ -718,6 +774,9 @@ function updateCNNvalues(val){
     i = cnn_values.length - 1;
     $("#saved-cnn"+i).text(val);
     $("#cnn-values-test").text(cnn_values);
+    console.log('i'+i);
+    $("#saved-cnn"+i).removeClass("invisible");
+    $("#saved-cnn"+i).addClass("visible-block");
 } 
 
 var selectedInt = [0,1]
@@ -818,6 +877,27 @@ function switchRight() {
     panel_index += 1;
     update();
 }
+function optionSwitch(index) {    
+    var allOptions = document.getElementById("main-container").querySelectorAll(".visible-template"); 
+    for(var j = 0; j < allOptions.length; ++j){
+        allOptions[j].classList.remove("visible-template");
+    } 
+    for (i = 0; i < total; i++) {
+        id = "option"+i;
+        if (i == index) {
+            $("#"+id).addClass("visible-template");
+            $("#option"+i+"-btn").removeClass("optionInactive");
+            $("#option"+i+"-btn").addClass("optionActive");
+        } else {
+            $("#option"+i+"-btn").removeClass("optionActive");
+            $("#option"+i+"-btn").addClass("optionInactive");
+        }
+    }
+    
+    switchCanvas(index)
+    toTop();
+}
+
 
 function update() {
     console.log("updating with panel_index="+panel_index);
@@ -848,10 +928,11 @@ function update() {
     toTop();
 }
 
-function switchCanvas(){ 
-    var ci = panel_index;
-    console.log("switching canvas w indx: "); 
-    console.log(panel_index); 
+function switchCanvas(ci="none"){ 
+    if (ci == "none"){
+        ci = panel_index;
+    }
+    
     if (ci == 0){
         console.log("getting regular canvas");
         canvas = document.getElementById('myCanvas');
@@ -873,7 +954,7 @@ function switchCanvas(){
             findxy('out', e)
         }, false);
 
-        $("#saved0").addClass("activeSaved");
+        $("#saved"+rememberActive).addClass("activeSaved");
         for (i = 0; i < 6; i++) {
             id = "saved"+i;
             $("#"+id).removeClass("activeSavedint");
@@ -917,7 +998,8 @@ function switchCanvas(){
         }, false);
 
         for (i = 0; i < 6; i++) {
-            id = "saved"+i;
+            id = "saved"+i
+            ;
             $("#"+id).removeClass("activeSaved");
         }
 

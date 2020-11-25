@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-favicon.png">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link href="https://fonts.googleapis.com/css?family=DM+Sans:Thin,Extra-Light,Light,Regular,Medium,Semibold,Bold" rel="stylesheet" >
+  <link href="https://fonts.googleapis.com/css?family=Roboto:Thin,Extra-Light,Light,Regular,Medium,Semibold,Bold" rel="stylesheet" >
   <link rel="blank-img" href="https://i.ya-webdesign.com/images/blank-png-1.png">
 </head>
   
@@ -21,9 +22,9 @@
 
   <div id="nav-middle">
     <br>
-    <span onclick="switchLeft()" style="cursor: pointer;">&lt;</span> 
-    <span id="option-name"> Prediction </span>
-    <span onclick="switchRight()" style="cursor: pointer;">&gt;</span> 
+    <span onclick="optionSwitch(0)" style="cursor: pointer;" class="optionActive" id="option0-btn" > Prediction</span> 
+    <!-- <span id="option-name"> Prediction </span> -->
+    <span onclick="optionSwitch(1)" style="cursor: pointer;" class="optionInactive" id="option1-btn">Interpolation </span> 
   </div> 
 
   <div id="nav-right">
@@ -50,7 +51,6 @@
       <!-- <p id="test-text">.. ...</p> -->
     </div>
     
-    
     <!-- PANELS -->
     <!-- <div id="option0" w3-include-HTML="/static/include/prediction.html" class="invisible-template visible-template"></div>
     <div id="option1" w3-include-HTML="/static/include/interpolation.html" class="invisible-template"></div> -->
@@ -66,35 +66,26 @@
             </div>
         </div>
           
-        <div id="gap-box">
-            <p style="color:white; font-size: 33px;">
-              <!-- ⮕ <br><br><br><br><br>⮕ <br><br><br><br> -->
-            </p>
-        </div>
-          
-        <div id="plot-container">   
+        
+        <div id="plot-container">
             <!-- PARALLEL PLOT COORDINATES -->    
             <div id="plot"></div>
             
             <style>
-              .axis {
-                opacity: 0.4;
-              }
-              .axis:hover {
-                opacity: 1;
-              }
+              .axis {opacity: 0.4;}
+              .axis:hover {opacity: 1;}
             </style>
-            <!-- INTERACTIVE PARALLEL PLOT COORDINATES -->      
+            <!-- INTERACTIVE PARALLEL PLOT COORDINATES -->
             <div id="plot2">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider1">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider2">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider3">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider4">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider5">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider6">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider7">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider8">
-              <input type="range" min="-2.000" max="2.000" value="0.000" step='.01' class="slider" id="slider9">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider1">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider2">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider3">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider4">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider5">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider6">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider7">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider8">
+              <input type="range" min="-2.0" max="2.0" value="0.0" step='.1' class="slider" id="slider9">
               <div id="plot2-text">
                 <p id="sliderValue1" class="slider-text">0</p>
                 <p id="sliderValue2" class="slider-text">0</p>
@@ -108,28 +99,15 @@
               </div>           
             </div>
             <div id="button-box">
-              <button class="button" id="clearBtn" style="width: 168px;" onclick="sliderPredict()">Predict</button>
+              <button class="button slider-btn" id="clearBtn" onclick="sliderPredict()">Predict</button>
                         
-              <button class="button" id="predictBtn" style="width: 168px;" onclick="resetSliders()">Reset</button>
+              <button class="button slider-btn" id="predictBtn" onclick="resetSliders()">Reset</button>
             </div>
         </div>
           
-        <div id="gap-box">
-            <p style="color:white; font-size: 33px;">
-              <!-- ⮕ <br><br><br><br> -->
-            </p>
-        </div>
-    
+        
         <div id="canvas-box">
             <canvas id="predCanvas" class="canvas" width="360" height="360"></canvas>
-            <!-- <p id="cnn-text-main" class="cnn-text-main">0.00</p> -->
-    
-            <div id="button-box">
-              <p class="notbutton" style="width: 100%;">
-                <span style="color:rgba(255, 255, 255, 0); font-weight: 600;">. </span>
-                <!-- <span id="prediction" style="color:black; font-weight: 500; font-size: 20px;"> </span> -->
-              </p>
-            </div>
         </div>
       </div>
     </div>
@@ -164,7 +142,7 @@
         </div>
       </div>
       <div style="text-align: center;">   
-        <button class="button canvas-btn" id="" onclick="interpolationRequest()">interpolate</button><br><br>
+        <button class="button canvas-btn" id="interpolate-btn" onclick="interpolationRequest()">Interpolate</button><br><br>
         <input type="range" min="1" max="4" value="3" step='1' class="" id="int-slider"><br>
         <p id="intSliderValue"  style="font-weight: bold;" class="slider-text">3</p>
       </div>
@@ -172,35 +150,37 @@
     
     <div id="images-container">
         <div id="single-image-container">
-          <img id="saved0" class="saved activeSaved" onclick=activeSaved(0)>
-          <p id="saved-cnn0" class="cnn-text">0.00</p>
+          <img id="saved0" src="/static/img/blank.png" class="saved" onclick=activeSaved(0)>
+          <p id="saved-cnn0" class="cnn-text invisible">0</p>
         </div>
         <div id="single-image-container">
-          <img id="saved1" class="saved" onclick=activeSaved(1)>
-          <p id="saved-cnn1" class="cnn-text">0.00</p>
+          <img id="saved1" src="/static/img/blank.png" class="saved" onclick=activeSaved(1)>
+          <p id="saved-cnn1" class="cnn-text invisible">0</p>
         </div>
         <div id="single-image-container">
-          <img id="saved2" class="saved" onclick=activeSaved(2)>
-          <p id="saved-cnn2" class="cnn-text">0.00</p>
+          <img id="saved2" src="/static/img/blank.png" class="saved" onclick=activeSaved(2)>
+          <p id="saved-cnn2" class="cnn-text invisible">0</p>
         </div>
         <div id="single-image-container">
-          <img id="saved3" class="saved" onclick=activeSaved(3)>
-          <p id="saved-cnn3" class="cnn-text">0.00</p>
+          <img id="saved3" src="/static/img/blank.png" class="saved" onclick=activeSaved(3)>
+          <p id="saved-cnn3" class="cnn-text invisible">0</p>
         </div>
         <div id="single-image-container">
-          <img id="saved4" class="saved" onclick=activeSaved(4)>
-          <p id="saved-cnn4" class="cnn-text">0.00</p>
+          <img id="saved4" src="/static/img/blank.png" class="saved" onclick=activeSaved(4)>
+          <p id="saved-cnn4" class="cnn-text invisible">0</p>
         </div>
         <div id="single-image-container">
-          <img id="saved5" class="saved" onclick=activeSaved(5)>
-          <p id="saved-cnn5" class="cnn-text">0.00</p>
+          <img id="saved5" src="/static/img/blank.png" class="saved" onclick=activeSaved(5)>
+          <p id="saved-cnn5" class="cnn-text invisible">0</p>
         </div>
 
         <br>
-        <div style="margin-top:20px;">
-            <button class="button saving-btn" id="saveBtn" onclick="savePNG()">Download Selected</button>
+        <div id="button-box2">
+            <button class="button saving-btn" id="saveBtn" onclick="savePNG()">Clear Selected</button>
             <button class="button saving-btn" id="saveBtn" onclick="resetSaved()">Clear All</button>
-        </div>
+            <button class="button saving-btn" id="saveBtn" onclick="savePNG()">Download Selected</button>
+        
+          </div>
         <!-- <p id="cnn-values-test">[...]</p> -->
 
     </div>
