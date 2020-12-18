@@ -747,7 +747,7 @@ function activeSaved(num) {
         if (datas[num]["empty"] == true){
             console.log("empty sketch!");
         } else {
-            if (panel_index == 0){
+            if (current_index == 0){
                 for (i = 0; i < 6; i++) {
                     id = "saved"+i;
                     if (i == num) {
@@ -760,7 +760,7 @@ function activeSaved(num) {
                 rememberActive = num;
                 baseChange(num);
 
-            } else if (panel_index == 1) {
+            } else if (current_index == 1) {
                 intSelect(num);
             }
         }
@@ -781,15 +781,13 @@ function updateCNNvalues(val){
 
 var selectedInt = [0,1]
 function intSelect(num) {
-    for (i = 0; i < 6; i++) {
-        id = "saved"+i;
-        if (i == num) {
-            $("#"+id).addClass("activeSavedint");
-            selectedInt.push(num);
-        }
-    }
+    selectedInt.push(num);    
     remove = selectedInt.shift();
+    console.log("remove: "+remove);
     $("#saved"+remove).removeClass("activeSavedint");
+    $("#saved"+selectedInt[0]).addClass("activeSavedint");
+    $("#saved"+selectedInt[1]).addClass("activeSavedint");
+
 }
 
 var intSlider = document.getElementById("int-slider");
@@ -877,24 +875,29 @@ function switchRight() {
     panel_index += 1;
     update();
 }
+current_index = 0;
 function optionSwitch(index) {    
     var allOptions = document.getElementById("main-container").querySelectorAll(".visible-template"); 
-    for(var j = 0; j < allOptions.length; ++j){
-        allOptions[j].classList.remove("visible-template");
-    } 
-    for (i = 0; i < total; i++) {
-        id = "option"+i;
-        if (i == index) {
-            $("#"+id).addClass("visible-template");
-            $("#option"+i+"-btn").removeClass("optionInactive");
-            $("#option"+i+"-btn").addClass("optionActive");
-        } else {
-            $("#option"+i+"-btn").removeClass("optionActive");
-            $("#option"+i+"-btn").addClass("optionInactive");
+    if (index != current_index) {
+        current_index = index;
+        
+        for(var j = 0; j < allOptions.length; ++j){
+            allOptions[j].classList.remove("visible-template");
+        } 
+        for (i = 0; i < total; i++) {
+            id = "option"+i;
+            if (i == index) {
+                $("#"+id).addClass("visible-template");
+                $("#option"+i+"-btn").removeClass("optionInactive");
+                $("#option"+i+"-btn").addClass("optionActive");
+            } else {
+                $("#option"+i+"-btn").removeClass("optionActive");
+                $("#option"+i+"-btn").addClass("optionInactive");
+            }
         }
+        
+        switchCanvas(index)
     }
-    
-    switchCanvas(index)
     toTop();
 }
 
@@ -930,7 +933,7 @@ function update() {
 
 function switchCanvas(ci="none"){ 
     if (ci == "none"){
-        ci = panel_index;
+        ci = current_index;
     }
     
     if (ci == 0){
@@ -998,8 +1001,7 @@ function switchCanvas(ci="none"){
         }, false);
 
         for (i = 0; i < 6; i++) {
-            id = "saved"+i
-            ;
+            id = "saved"+i;
             $("#"+id).removeClass("activeSaved");
         }
 

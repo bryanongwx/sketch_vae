@@ -21,18 +21,17 @@ try:
 except (ImportError,):
     import json
 
+encoder_link = "static/h5/encoder_curve.h5"
+decoder_link = "static/h5/decoder_curve.h5"   
+model_link = "static/h5/model_truss.h5"
+model_link = "static/h5/model.h5"
+
 
 def create_app():
     app = Flask(__name__)
     return app
 app = create_app()
 
-# @app.route('/weights')
-# def get_weights():
-#     with app.test_request_context():
-#         encoder_weights = redirect(url_for('static', filename='h5/encoder_truss.h5'))
-#         # decoder_weights = redirect(url_for('static', filename='h5/decoder_truss.h5'))
-#     return encoder_weights
 
 @lru_cache()
 def load_model():
@@ -72,11 +71,13 @@ def load_model():
     decoder_outputs = layers.Conv2DTranspose(num_channels, 3, activation="sigmoid", padding="same")(x)
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
 
-    encoder.load_weights("static/h5/encoder_truss.h5")
-    decoder.load_weights("static/h5/decoder_truss.h5")
+    encoder.load_weights(encoder_link)
+    decoder.load_weights(decoder_link)
     print(" = = = FINISHED LOADING VAE MODELS AND WEIGHTS = = =")
 
     cnn_model = load_CNN_model()
+    # cnn_model = load_vector_CNN_model()
+
     return encoder, decoder, cnn_model
 
 def load_CNN_model():
@@ -107,10 +108,32 @@ def load_CNN_model():
         tf.keras.layers.Dense(1, activation = 'linear')
     ])
 
-    model.load_weights('static/h5/model_truss.h5')
+    model.load_weights(model_link)
     print(" = = = FINISHED LOADING CNN MODEL WEIGHTS = = =")
     return model
 
+
+def load_slider_CNN_model():
+    train_data = 8
+
+
+
+    img_rows, img_cols = 72, 72
+    num_channels = 3
+
+    model = tf.keras.Sequential([
+                             
+    tf.keras.layers.Dense(32, activation=tf.nn.relu, 
+                       input_shape=(train_data.shape[1],)),
+    tf.keras.layers.Dense(32, activation=tf.nn.relu),
+    tf.keras.layers.Dense(32, activation=tf.nn.relu),
+    tf.keras.layers.Dense(1, activation = 'linear')
+    
+    ])
+
+    model.load_weights(slider_model_link)
+    print(" = = = FINISHED LOADING CNN MODEL WEIGHTS = = =")
+    return model
 
 
 @app.route("/")
