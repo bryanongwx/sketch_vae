@@ -327,6 +327,7 @@ function CNNpredict(input) {
     });
 }
 function CNNpredictVector(input) {
+    console.log("slider CNN called:");
     input = JSON.stringify(input);
     
     $.ajax({
@@ -339,8 +340,8 @@ function CNNpredictVector(input) {
     });
 }
 function callbackFuncCNN(response) {
-    // console.log("Callback RESPONSE is:");
-    // console.log(response)
+    console.log("Callback RESPONSE is:");
+    console.log(response)
     var value = response["result"];
     // console.log(value);
     console.log("baseFactor0: "+base_factor)
@@ -580,7 +581,7 @@ function sliderPredict() {
     }
     storeData();
     VAEdecoderRequest(sliderArray);
-    CNNpredict(input);
+    CNNpredictVector(sliderArray);
     scrollTo(0,0);
 }
 function resetSliders() {

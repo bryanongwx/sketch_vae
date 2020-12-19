@@ -24,7 +24,7 @@ except (ImportError,):
 encoder_link = "static/h5/encoder_curve.h5"
 decoder_link = "static/h5/decoder_curve.h5"   
 model_link = "static/h5/model_truss.h5"
-model_link = "static/h5/model.h5"
+slider_model_link = "static/h5/model.h5"
 
 
 def create_app():
@@ -76,9 +76,11 @@ def load_model():
     print(" = = = FINISHED LOADING VAE MODELS AND WEIGHTS = = =")
 
     cnn_model = load_CNN_model()
+
+    slider_cnn_model = load_slider_CNN_model()
     # cnn_model = load_vector_CNN_model()
 
-    return encoder, decoder, cnn_model
+    return encoder, decoder, cnn_model, slider_cnn_model
 
 def load_CNN_model():
     #model = tf.keras.models.load_model('saved_encoder/my_encoder')
@@ -114,9 +116,12 @@ def load_CNN_model():
 
 
 def load_slider_CNN_model():
-    train_data = 8
 
-
+    # train_data = 8
+    # train_data = np.asarray(train_data, dtype='uint8')
+    # train_data = train_data.reshape(8)
+ 
+    train_data_shape = 8
 
     img_rows, img_cols = 72, 72
     num_channels = 3
@@ -124,7 +129,7 @@ def load_slider_CNN_model():
     model = tf.keras.Sequential([
                              
     tf.keras.layers.Dense(32, activation=tf.nn.relu, 
-                       input_shape=(train_data.shape[1],)),
+                       input_shape=(8,)),
     tf.keras.layers.Dense(32, activation=tf.nn.relu),
     tf.keras.layers.Dense(32, activation=tf.nn.relu),
     tf.keras.layers.Dense(1, activation = 'linear')
@@ -212,7 +217,20 @@ def CNNpredict():
 @app.route('/CNNpredictVector', methods=['GET','POST'])
 def CNNpredictVector():
     JSinput = request.get_json()
-    lst = json.loads(JSinput["input"])
+    vector = json.loads(JSinput["input"])
+    print("vector json: ",vector)
+
+    
+    vector = np.asarray(vector, dtype='uint8')
+    vector = vector.reshape(1,8)
+    print("vector json: ",vector)
+
+    prediction = slider_cnn_model.predict(vector)
+    print("prediction: ",prediction)
+    prediction = prediction[0][0]
+    prediction = float(prediction)
+    print("prediction 0 0: ",prediction)
+
 
     return jsonify({"result": prediction})
 
@@ -277,6 +295,6 @@ def favicon():
 
 
 
-encoder,decoder, cnn_model = load_model()
+encoder, decoder, cnn_model, slider_cnn_model = load_model()
 if __name__ == '__main__':
     app.run(use_reloader=False, debug=True)

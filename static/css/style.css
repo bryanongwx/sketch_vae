@@ -21,7 +21,7 @@
 :root {
     --blue-color: rgb(52, 94, 233);
     --nav-height: 70px;
-    --background:  rgb(219, 219, 219);
+    --background:  rgb(230, 230, 230);
     --main-text-color: rgb(23, 24, 26);
     --canvas-color: rgb(255, 255, 255);
 
@@ -54,7 +54,7 @@ h6{font-size:16px; color:var(--main-text-color);}
 }
 #nav {
     /* background-color: rgba(219, 219, 219, .5); */
-    background-image: linear-gradient( rgba(219, 219, 219, 1),  rgba(219, 219, 219, .6), rgba(219, 219, 219, 0));
+    background-image: linear-gradient( rgba(230, 230, 230, 1),  rgba(230, 230, 230, .6), rgba(230, 230, 230, 0));
     width: 100%;
     height: var(--nav-height);
     margin: 0;
