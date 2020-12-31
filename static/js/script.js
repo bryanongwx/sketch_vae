@@ -234,6 +234,7 @@ function VAEpredict() {
         storeData();
         VAEencoderRequest(input);
         CNNpredict(input);
+
     };
     pred.src = canvas.toDataURL('image/png');
 }   
@@ -775,7 +776,7 @@ function updateCNNvalues(val){
     i = cnn_values.length - 1;
     $("#saved-cnn"+i).text(val);
     $("#cnn-values-test").text(cnn_values);
-    console.log('i'+i);
+    console.log('i '+i);
     $("#saved-cnn"+i).removeClass("invisible");
     $("#saved-cnn"+i).addClass("visible-block");
 } 
@@ -1015,3 +1016,6 @@ function switchCanvas(ci="none"){
 function toTop() {
     window.scrollTo(0,0);
 }
+
+
+

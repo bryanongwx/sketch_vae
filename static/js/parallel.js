@@ -23,90 +23,88 @@ var svg = d3.select("#plot")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-// Parse the Data
-d3.csv("static/js/csv_data.txt", function(data) {
 
-  // Color scale: give me a specie name, I return a color
-  var color = d3.scaleOrdinal()
-    .domain(["domain1"]) //, "2", "3", "4", "5", "6", "7", "8", "9" ])
-    .range([color1]) //,, color2, color3, color4, color5, color6, color7, color8, color9])
 
-  // Here I set the list of dimension manually to control the order of axis:
-  dimensions = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+var csv_data = [
+  [-0.9, -0.01,-0.25,0.6, 1.17, -1, -1.88, 1.38, -0.26],
+  [-0.9, 0.01, 0.25, -0.6, -1.1, 1, 1.88, 1.38, 0.26],
+  [-.5,-.5,-.5,-.5,-.5,-.5,-.5,-.5,-.5]
+];
 
-  // For each dimension, I build a linear scale. I store all in a y object
-  var y = {}
-  for (i in dimensions) {
-    name = dimensions[i]
-    y[name] = d3.scaleLinear()
-      .domain( [-2,2] ) // --> Same axis range for each group
-      // --> different axis range for each group --> .domain( [d3.extent(data, function(d) { return +d[name]; })] )
-      .range([height, 0])
+function replot(csv_data){
+  console.log("second plot");
+
+  if (csv_data == 2){
+    csv_data = [[-2, -1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2]];
+  } else {
+    csv_data = csv_data;
   }
 
-  // Build the X scale -> it find the best position for each Y axis
-  x = d3.scalePoint()
-    .range([0, width])
-    .domain(dimensions);
 
-  // Highlight the specie that is hovered
-  var highlight = function(d){
+  // Parse the Data
+  d3.csv(csv_data, function(data) {
+    data = csv_data;
+    // console.log(data);
+    // console.log(csv_data);
+    var csv_titles = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "Species"];
 
-    selected_specie = d.Species
 
-    // first every group turns grey
-    d3.selectAll(".line")
-      .transition().duration(200)
-      .style("stroke", "black")
-      .style("opacity", "0.4")
-    // Second the hovered specie takes its color
-    d3.selectAll("." + selected_specie)
-      .transition().duration(200)
-      .style("stroke", color(selected_specie))
-      .style("opacity", "1")
-  }
+    // Extract the list of dimensions we want to keep in the plot. Here I keep all except the column called Species
+    dimensions = d3.keys(csv_titles).filter(function(d) { return d != "Species" })
+    var color = d3.scaleOrdinal()
+      .domain(["domain1"]) //, "2", "3", "4", "5", "6", "7", "8", "9" ])
+      .range([color1]) //,, color2, color3, color4, color5, color6, color7, color8, color9])
 
-  // Unhighlight
-  var doNotHighlight = function(d){
-    d3.selectAll(".line")
-      .transition().duration(200).delay(1000)
-      .style("stroke", function(d){ return( color(d.Species))} )
-      .style("opacity", "1")
-  }
+    // For each dimension, I build a linear scale. I store all in a y object
+    var y = {}
+    for (i in dimensions) {
+      name = dimensions[i]
+      y[name] = d3.scaleLinear()
+        .domain( [-2,2] ) // --> Same axis range for each group
+        .range([height, 0])
+    }
 
-  // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
-  function path(d) {
-      return d3.line()(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
-  }
+    // Build the X scale -> it find the best position for each Y axis
+    x = d3.scalePoint()
+      .range([0, width])
+      .padding(1)
+      .domain(dimensions);
 
-  // Draw the lines
-  svg
-  .selectAll("myPath")
-    .data(data)
-    .enter()
-    .append("path")
-      .attr("class", function (d) { return "line " + d.Species } ) // 2 class for each line: 'line' and the group name
-      .attr("d", path)
-      .style("fill", "none" )
-      .style("stroke", function(d){ return( color(d.Species))} )
-      .style("opacity", 0.5)
-      .on("mouseover", highlight)
-      .on("mouseleave", doNotHighlight )
+    // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+    function path(d) {
+        return d3.line()(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
+    }
 
-  // Draw the axis:
-  svg.selectAll("myAxis")
-    // For each dimension of the dataset I add a 'g' element:
-    .data(dimensions).enter()
-    .append("g")
-    .attr("class", "axis")
-    // I translate this element to its right position on the x axis
-    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-    // And I build the axis with the call function
-    .each(function(d) { d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d])); })
-    // Add axis title
-    .append("text")
-      .style("text-anchor", "middle")
-      .attr("y", -9)
-      .text(function(d) { return d; })
-      .style("fill", "black")
-})
+    
+    
+    // Draw the lines
+    svg
+      .selectAll("myPath")
+      .data(data)
+      .enter().append("path")
+      .attr("d",  path)
+      .style("fill", "none")
+      .style("stroke", "rgb(0,0,255)")
+      .style("opacity", 0.85)
+
+    // Draw the axis:
+    svg.selectAll("myAxis")
+      // For each dimension of the dataset I add a 'g' element:
+      .data(dimensions).enter()
+      .append("g")
+      // I translate this element to its right position on the x axis
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+      // And I build the axis with the call function
+      .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y[d])); })
+      // Add axis title
+      .append("text")
+        .style("text-anchor", "middle")
+        .attr("y", -9)
+        .text(function(d) { return d; })
+        .style("fill", "black")
+
+  })
+}
+
+console.log("initial plot");
+replot(csv_data);

@@ -61,7 +61,7 @@
         <div id="canvas-box">
             <canvas id="myCanvas" class="canvas" width="360" height="360"></canvas>
             <div id="button-box">
-              <button class="button canvas-btn" id="predictBtn" onclick="VAEpredict()">Predict</button>
+              <button class="button canvas-btn" id="predictBtn" onclick="VAEpredict(); replot(2);" onclick="VAEpredict()">Predict</button>
               <button class="button canvas-btn" id="clearBtn" onclick="erase()">Clear</button>
             </div>
         </div>
