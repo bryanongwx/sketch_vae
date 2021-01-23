@@ -1,25 +1,7 @@
-/* .w3-row-padding img {margin-bottom: 12px}
-#main {margin-left: 170px}
-.w3-p {font-size: 100px}
-@media only screen and (max-width: 600px) {#main {margin-left: 0}} */
-/* 
-#canvas-container {
-    border: red 2px dashed;
-}
-#canvas-box, #gap-box {
-    border: orange 2px solid;
-}
-#plot-container {
-    border: 2px dashed greenyellow;
-}
-#button-box {
-    border: pink solid 2px;
-} */
-
-
-/* MINE */
+/* VARIABLES */
 :root {
     --blue-color: rgb(52, 94, 233);
+    --red-color: rgb(214, 29, 53);
     --nav-height: 70px;
     --background:  rgb(230, 230, 230);
     --main-text-color: rgb(23, 24, 26);
@@ -29,8 +11,7 @@
 
 
 html,body, .button, .notbutton{
-    font-family: 'DM Sans',monospace;
-    font-family: 'Roboto',monospace;
+    font-family: 'Roboto',sans-serif;
     font-size:15px;line-height:1; 
     background-color: var(--background);
     margin:0;
@@ -150,24 +131,13 @@ h6{font-size:16px; color:var(--main-text-color);}
     z-index: 5;
 }
 .int-canvas {
-    border: red 2px solid;
+    border: var(--red-color) 2px solid;
 }
 
 #predCanvas {    
     background-color: var(--canvas-color);
-    /* vertical-align: top; */
-    /* margin-top: -100px; */
-    /* transform: translateY(-4px); */
-    
 }
 
-.loading-div {
-    color: var(--main-text-color);
-    text-align: center;
-    font-style: italic;
-    font-size: 30px;
-    transition: .3s;
-}
 .invisible {
     display: none;
 }
@@ -333,7 +303,7 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 .activeSavedint {
     outline: 2px solid var(--blue-color);
-    outline: 2px solid red;
+    outline: 2px solid var(--red-color);
 }
 .activeSaved {
     outline: 2px solid var(--blue-color);
@@ -397,27 +367,6 @@ input[type=range]::-webkit-slider-thumb:active {
     color: var(--main-text-color);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

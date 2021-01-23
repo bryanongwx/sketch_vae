@@ -23,31 +23,27 @@ var svg = d3.select("#plot")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-
-
+// var csv_data = "/static/js/csv/csv_data.txt";
 var csv_data = [
+  // fake data used for testing
   [-0.9, -0.01,-0.25,0.6, 1.17, -1, -1.88, 1.38, -0.26],
   [-0.9, 0.01, 0.25, -0.6, -1.1, 1, 1.88, 1.38, 0.26],
   [-.5,-.5,-.5,-.5,-.5,-.5,-.5,-.5,-.5]
 ];
 
+// function used for testing switching the data to see if the plot would update
 function replot(csv_data){
-  console.log("second plot");
-
   if (csv_data == 2){
+    // fake data used for testing
     csv_data = [[-2, -1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2]];
   } else {
     csv_data = csv_data;
   }
 
-
   // Parse the Data
   d3.csv(csv_data, function(data) {
     data = csv_data;
-    // console.log(data);
-    // console.log(csv_data);
     var csv_titles = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "Species"];
-
 
     // Extract the list of dimensions we want to keep in the plot. Here I keep all except the column called Species
     dimensions = d3.keys(csv_titles).filter(function(d) { return d != "Species" })
@@ -73,9 +69,7 @@ function replot(csv_data){
     // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
     function path(d) {
         return d3.line()(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
-    }
-
-    
+    }    
     
     // Draw the lines
     svg
@@ -106,5 +100,5 @@ function replot(csv_data){
   })
 }
 
-console.log("initial plot");
+// function used for testing switching the data to see if the plot would update
 replot(csv_data);
